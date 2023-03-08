@@ -1,11 +1,10 @@
 package com.rpfcoding.androidmongorealmpractice.ui.theme
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Shapes
-import androidx.compose.material3.Typography
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -54,13 +53,18 @@ val Typography = Typography(
 
 @Composable
 fun AndroidMongoRealmPracticeTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
 
     MaterialTheme(
         colorScheme = LightColorPalette,
         typography = Typography,
-        content = content
+        content = {
+            Surface(
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+            ) {
+                content()
+            }
+        }
     )
 }

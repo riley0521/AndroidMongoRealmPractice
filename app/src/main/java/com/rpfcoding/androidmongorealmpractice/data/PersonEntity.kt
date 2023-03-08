@@ -11,4 +11,5 @@ class PersonEntity : RealmObject {
     var name: String = ""
     var age: Int = 0
     var timestamp: RealmInstant = RealmInstant.now()
+    var owner_id: String = ""
 }

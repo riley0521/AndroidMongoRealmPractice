@@ -1,4 +1,4 @@
-package com.rpfcoding.androidmongorealmpractice.presentation
+package com.rpfcoding.androidmongorealmpractice.presentation.home
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.horizontalScroll
@@ -69,7 +69,7 @@ fun HomeContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(all = 24.dp),
+            .padding(all = 16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

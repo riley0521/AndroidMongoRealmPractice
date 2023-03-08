@@ -1,23 +1,18 @@
-package com.rpfcoding.androidmongorealmpractice.presentation
+package com.rpfcoding.androidmongorealmpractice.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rpfcoding.androidmongorealmpractice.data.PersonRepository
+import com.rpfcoding.androidmongorealmpractice.data.MongoPersonRepository
 import com.rpfcoding.androidmongorealmpractice.domain.Person
-import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import kotlin.random.Random
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val personRepository: PersonRepository
-) : ViewModel() {
+class HomeViewModel : ViewModel() {
 
     private val _name = MutableStateFlow("")
     val name = _name.asStateFlow()
@@ -39,8 +34,8 @@ class HomeViewModel @Inject constructor(
 
     private fun initPeopleJob(shouldReset: Boolean = false) {
         fetchPeopleJob = viewModelScope.launch {
-            personRepository.getAll().collect { people ->
-                if(shouldReset) {
+            MongoPersonRepository.getAll().collect { people ->
+                if (shouldReset) {
                     _filtered.update { false }
                     _name.update { "" }
                     _objectId.update { "" }
@@ -59,27 +54,27 @@ class HomeViewModel @Inject constructor(
     }
 
     fun insertPerson() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             if (_name.value.isNotBlank()) {
                 _objectId.update {
-                    personRepository.insert(
+                    MongoPersonRepository.insert(
                         Person(
                             name = _name.value,
                             age = Random.nextInt(12, 50),
                         )
-                    )
+                    ) ?: ""
                 }
             }
         }
     }
 
     fun updatePerson() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             if (_objectId.value.isNotBlank() && _name.value.isNotBlank()) {
                 val personToUpdate =
                     _data.value.firstOrNull { it.id == _objectId.value } ?: return@launch
 
-                personRepository.update(
+                MongoPersonRepository.update(
                     personToUpdate.copy(
                         name = _name.value,
                         id = _objectId.value
@@ -90,9 +85,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun deletePerson() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             if (_objectId.value.isNotBlank()) {
-                personRepository.deleteById(_objectId.value)
+                MongoPersonRepository.deleteById(_objectId.value)
             }
         }
     }
@@ -101,7 +96,7 @@ class HomeViewModel @Inject constructor(
         fetchPeopleJob?.cancel()
         fetchPeopleJob = null
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             if (_filtered.value) {
 //                personRepository.getAll().collect { people ->
 //                    _filtered.update { false }
@@ -111,7 +106,7 @@ class HomeViewModel @Inject constructor(
 
                 initPeopleJob(shouldReset = true)
             } else {
-                personRepository.filterByName(_name.value).collect { people ->
+                MongoPersonRepository.filterByName(_name.value).collect { people ->
                     _filtered.update { true }
                     _data.update { people }
                 }

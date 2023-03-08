@@ -74,7 +74,11 @@ dependencies {
 
     // Mongo Realm
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("io.realm.kotlin:library-base:1.6.1")
+//    implementation("io.realm.kotlin:library-base:1.6.1")
+    implementation("io.realm.kotlin:library-sync:1.6.0")
+
+    implementation("com.github.stevdza-san:MessageBarCompose:1.0.5")
+    implementation("com.github.stevdza-san:OneTapCompose:1.0.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
